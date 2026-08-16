@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: prompt-api-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: prompt_user
+      POSTGRES_PASSWORD: prompt_password
+      POSTGRES_DB: prompt_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

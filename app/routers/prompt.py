@@ -1,6 +1,5 @@
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, status, Depends
 from app.schemas.prompt import PromptCreate, PromptResponse, PromptUpdate
-from sqlalchemy import select
 
 from app.db.database import  get_db
 

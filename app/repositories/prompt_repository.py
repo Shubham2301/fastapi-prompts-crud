@@ -1,20 +1,18 @@
 from sqlalchemy.orm import Session
-from fastapi import Depends, HTTPException
-from app.db.database import get_db
-from app.schemas.prompt import PromptCreate, PromptUpdate
 from app.models.prompt import Prompt
 from sqlalchemy import select
 
-def create_prompt(new_prompt: PromptCreate, db: Session = Depends(get_db)) -> Prompt:
 
-    db.add(new_prompt)
+def create(prompt: Prompt, db: Session) -> Prompt:
+
+    db.add(prompt)
     db.commit()
-    db.refresh(new_prompt)
+    db.refresh(prompt)
 
-    return new_prompt
+    return prompt
 
 
-def get_prompts(db: Session = Depends(get_db)):
+def get_all(db: Session) -> list[Prompt]:
     result = db.scalars(
         select(Prompt)
     )
@@ -22,50 +20,26 @@ def get_prompts(db: Session = Depends(get_db)):
     return result.all()
 
 
-def get_prompt(prompt_id: int, db: Session = Depends(get_db)):
-    prompt = db.get(Prompt, prompt_id)
-
-    if prompt is None:
-        raise HTTPException(status_code=404, detail = "Prompt not found!")
-
-    return prompt
+def get_by_id(prompt_id: int, db: Session) -> Prompt:
+   return db.get(Prompt, prompt_id)
+  
 
 
-def update_partial_prompt(prompt_id: int, prompt_data: PromptUpdate, db: Session = Depends(get_db)):
-    prompt = db.get(Prompt, prompt_id)
-
-    if prompt is None:
-        raise HTTPException(status_code=404, detail = "Prompt not found!")
-
-    update_data = prompt_data.model_dump(exclude_unset=True)
-
-    for field, value in update_data.items():
-        setattr(prompt, field, value)
-
+def update_patch(prompt: Prompt, db: Session) -> Prompt:
     db.commit()
     db.refresh(prompt)
 
     return prompt
 
 
-def update_full_prompt(prompt_id: int, prompt_data: PromptCreate, db: Session = Depends(get_db)):
-    prompt = db.get(Prompt, prompt_id)
+def update_prompt(prompt: Prompt, db: Session) -> Prompt:
+    db.commit()
+    db.refresh(prompt)
 
-    if prompt is None:
-        raise HTTPException(status_code=404, detail = "Prompt not found!")
-
-   
-    prompt.title = prompt_data.title
-    prompt.content = prompt_data.content
-    prompt.category = prompt_data.category
     return prompt
 
 
-def delete_prompt(prompt_id: int, db: Session = Depends(get_db)):
-    prompt = db.get(Prompt, prompt_id)
-
-    if prompt is None:
-        raise HTTPException(status_code=404, detail = "Prompt not found!")
+def delete_prompt(prompt: Prompt, db: Session):
 
     db.delete(prompt)
     db.commit()

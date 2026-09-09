@@ -1,5 +1,6 @@
-from fastapi import APIRouter, status, Depends
-from app.schemas.prompt import PromptCreate, PromptResponse, PromptUpdate
+from fastapi import APIRouter, status, Depends, Query
+from app.schemas.prompt import PromptCreate, PromptResponse, PromptUpdate, PromptListResponse
+from typing import Optional
 
 from app.db.database import  get_db
 
@@ -10,6 +11,7 @@ from app.services.prompt_service import get_prompt as get_prompt_service
 from app.services.prompt_service import update_partial_prompt as update_partial_prompt_service
 from app.services.prompt_service import update_full_prompt as update_full_prompt_service
 from app.services.prompt_service import delete_prompt as delete_prompt_service
+
 
 
 
@@ -25,9 +27,16 @@ def create_prompt(prompt: PromptCreate, db: Session = Depends(get_db)):
     return create_prompt_service(prompt, db)
 
 
-@router.get("/", response_model=list[PromptResponse], status_code=status.HTTP_200_OK)
-def get_prompts(db: Session = Depends(get_db)):
-    return get_prompts_service(db)
+@router.get("/", response_model=PromptListResponse, status_code=status.HTTP_200_OK)
+def get_prompts(db: Session = Depends(get_db), limit: int = Query(default=2, ge=1, le=100),  offset: int = Query(default=0, ge=0), category: Optional[str] = Query(default=None), q: Optional[str] = Query(default=None, min_length=1)):
+    items, total = get_prompts_service(db, limit, offset, category, q)
+
+    return PromptListResponse(
+        items=items,
+        total=total,
+        limit=limit,
+        offset=offset,
+    )
 
 
 @router.get("/{prompt_id}", response_model=PromptResponse, status_code=status.HTTP_200_OK)

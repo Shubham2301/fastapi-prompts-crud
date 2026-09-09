@@ -3,9 +3,15 @@ from app.schemas.prompt import PromptUpdate
 from app.models.prompt import Prompt
 from sqlalchemy.orm import Session
 from app.repositories import prompt_repository
-from app.exceptions.prompt import PromptNotFoundException
+from app.exceptions.prompt import PromptNotFoundException, PromptAlreadyExistsException
+from typing import Optional
 
 def create_prompt(prompt: PromptCreate, db: Session) -> Prompt:
+
+    existing_prompt = prompt_repository.get_by_title(prompt.title, db)
+
+    if existing_prompt is not None:
+        raise PromptAlreadyExistsException(prompt.title)
 
     new_prompt =  Prompt(
         title=prompt.title,
@@ -17,8 +23,8 @@ def create_prompt(prompt: PromptCreate, db: Session) -> Prompt:
 
 
 
-def get_prompts(db: Session):
-    return prompt_repository.get_all(db)
+def get_prompts(db: Session, limit: int, offset: int, category: Optional[str] = None, q: Optional[str] = None):
+    return prompt_repository.get_all(db, limit, offset, category, q)
 
 
 def get_prompt(prompt_id: int, db: Session):

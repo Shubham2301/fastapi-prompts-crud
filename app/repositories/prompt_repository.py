@@ -12,14 +12,32 @@ def create(prompt: Prompt, db: Session) -> Prompt:
     return prompt
 
 
-def get_all(db: Session, limit: int, offset: int, category: Optional[str] = None, q: Optional[str] = None) -> tuple:
+def get_all(
+    db: Session,
+    limit: int,
+    offset: int,
+    category: Optional[str] = None,
+    q: Optional[str] = None,
+    sort_by: str = "id",
+    sort_order: str = "asc"
+) -> tuple:
     query  = select(Prompt)
+    SORT_COLUMNS = {
+        "id": Prompt.id,
+        "title": Prompt.title,
+        "category": Prompt.category,
+    }
+
+    column = SORT_COLUMNS[sort_by]
 
     if category is not None:
         query = query.where(Prompt.category == category)
 
     if q is not None:
         query = query.where(Prompt.title.ilike(f"%{q}%"))
+
+    query = query.order_by(column.asc() if sort_order == "asc" else column.desc())
+
 
     items = db.scalars(
         query.limit(limit).offset(offset)

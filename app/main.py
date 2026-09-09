@@ -15,7 +15,7 @@ import logging
 
 setup_logging()
 
-app = FastAPI()
+app = FastAPI(title="Prompt Fast API", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -25,7 +25,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(prompt_router)
+app.include_router(prompt_router, prefix="/api/v1")
 
 
 logger = logging.getLogger(__name__)
@@ -71,3 +71,19 @@ def root():
         "database": result.scalar(),
     }
 
+
+@app.get("/health")
+def health():
+    try:
+        with engine.connect() as connection:
+            result = connection.execute(text("SELECT 1"))
+        return {
+            "status": "OK",
+        }
+    except Exception as e:
+        logger.exception("Health check failed: Database connection error")
+
+    return JSONResponse(
+        status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+        content=error_body("SERVICE_UNAVAILABLE","Database unreachable"),
+    )

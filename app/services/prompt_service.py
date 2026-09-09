@@ -23,8 +23,16 @@ def create_prompt(prompt: PromptCreate, db: Session) -> Prompt:
 
 
 
-def get_prompts(db: Session, limit: int, offset: int, category: Optional[str] = None, q: Optional[str] = None):
-    return prompt_repository.get_all(db, limit, offset, category, q)
+def get_prompts(
+    db: Session,
+    limit: int,
+    offset: int,
+    category: Optional[str] = None,
+    q: Optional[str] = None,
+    sort_by: str = "id",
+    sort_order: str = "asc"
+):
+    return prompt_repository.get_all(db, limit, offset, category, q, sort_by, sort_order)
 
 
 def get_prompt(prompt_id: int, db: Session):

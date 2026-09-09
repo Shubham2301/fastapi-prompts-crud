@@ -135,7 +135,7 @@ Important concepts:
 
 
 
-## Phase 6 — Production API Quality 🟡 IN PROGRESS
+## Phase 6 — Production API Quality ✅ DONE
 
 - [x] Configuration management
 - [x] Environment variables
@@ -144,14 +144,13 @@ Important concepts:
 - [x] Consistent error responses
 - [x] Pagination
 - [x] Filtering & search
-- [ ] Sorting
-- [ ] API versioning
-- [ ] Health checks
+- [x] Sorting
+- [x] API versioning
+- [x] Health checks
 
-**Status:** 🟡 In Progress
-**Current:** Sorting
+**Status:** ✅ Complete
 
-`Settings` lives in `app/core/config.py`. `.env` is gitignored; `.env.example` documents `DATABASE_URL`, `CORS_ORIGINS`, `LOG_LEVEL`. List errors use `{error: {code, message, details?}}`. `GET /prompts/` returns `{items, total, limit, offset}` with SQL `LIMIT`/`OFFSET`, optional `category` (exact) and `q` (title `ILIKE`).
+`Settings` lives in `app/core/config.py`. Prompt routes live under `/api/v1`. List supports `limit`/`offset`, `category`, `q`, `sort_by`/`sort_order`. `GET /health` is unversioned: 200 `{"status":"OK"}` when Postgres answers `SELECT 1`, 503 `SERVICE_UNAVAILABLE` if it does not.
 
 ---
 
@@ -267,9 +266,9 @@ Router → Service → Repository
 
 # Current Position
 
-**Phase 6 — Production API Quality**
+**Phase 6 — Production API Quality** ✅ Complete
 
-**Next:** Sorting (`GET /prompts/` query params)
+**Next:** Phase 7 — Authentication & Authorization (User model)
 
 ```text
 Phase 1  — FastAPI Fundamentals          ✅
@@ -277,8 +276,8 @@ Phase 2  — CRUD API                      ✅
 Phase 3  — PostgreSQL + SQLAlchemy       ✅
 Phase 4  — Application Architecture      ✅
 Phase 5  — Automated Testing             ⏸️ SKIPPED
-Phase 6  — Production API Quality        🟡 CURRENT
-Phase 7  — Authentication & Authorization ⬜
+Phase 6  — Production API Quality        ✅
+Phase 7  — Authentication & Authorization ⬜ NEXT
 Phase 8  — Prompt Management             ⬜
 Phase 9  — AI Integration                ⬜
 Phase 10 — RAG / AI Knowledge            ⬜

@@ -8,7 +8,6 @@ class PromptCreate(BaseModel):
 
 
 class PromptResponse(BaseModel):
-
     model_config = ConfigDict(from_attributes=True)
 
     id: int
@@ -27,3 +26,10 @@ class PromptListResponse(BaseModel):
     total: int
     limit: int
     offset: int
+
+
+class PromptExecuteResponse(BaseModel):
+    prompt_id: int
+    model: str
+    output: str
+    usage: dict

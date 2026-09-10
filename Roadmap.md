@@ -156,7 +156,7 @@ Important concepts:
 
 
 
-## Phase 7 — Authentication & Authorization ⬜ NOT STARTED
+## Phase 7 — Authentication & Authorization ⏸️ SKIPPED FOR NOW
 
 - [ ] User model
 - [ ] User registration
@@ -167,13 +167,13 @@ Important concepts:
 - [ ] User-specific prompts
 - [ ] Authorization rules
 
-**Status:** ⬜ Not Started
+**Status:** ⏸️ Skipped — resume after Phase 9
 
 ---
 
 
 
-## Phase 8 — Prompt Management ⬜ NOT STARTED
+## Phase 8 — Prompt Management ⏸️ SKIPPED FOR NOW
 
 - [ ] Prompt versions
 - [ ] Tags
@@ -184,24 +184,27 @@ Important concepts:
 - [ ] Usage statistics
 - [ ] Soft deletion
 
-**Status:** ⬜ Not Started
+**Status:** ⏸️ Skipped — resume after Phase 9
 
 ---
 
 
 
-## Phase 9 — AI Integration ⬜ NOT STARTED
+## Phase 9 — AI Integration 🟡 IN PROGRESS
 
-- [ ] OpenAI-compatible API
-- [ ] Ollama
-- [ ] Prompt execution
+- [x] OpenAI-compatible API
+- [x] Ollama
+- [x] Prompt execution
 - [ ] Execution history
 - [ ] Token/cost tracking
 - [ ] Model selection
 - [ ] Streaming
 - [ ] Embeddings
 
-**Status:** ⬜ Not Started
+**Status:** 🟡 In Progress
+**Current:** Execution history (9.3)
+
+`POST /api/v1/prompts/{id}/execute` loads saved `Prompt.content`, POSTs OpenAI-compat chat to Ollama, returns `{prompt_id, model, output, usage}`. No extra user message. 404 if missing prompt; 503 if Ollama is down.
 
 ---
 
@@ -266,9 +269,9 @@ Router → Service → Repository
 
 # Current Position
 
-**Phase 6 — Production API Quality** ✅ Complete
+**Phase 9 — AI Integration**
 
-**Next:** Phase 7 — Authentication & Authorization (User model)
+**Next:** Execution history (9.3)
 
 ```text
 Phase 1  — FastAPI Fundamentals          ✅
@@ -277,9 +280,9 @@ Phase 3  — PostgreSQL + SQLAlchemy       ✅
 Phase 4  — Application Architecture      ✅
 Phase 5  — Automated Testing             ⏸️ SKIPPED
 Phase 6  — Production API Quality        ✅
-Phase 7  — Authentication & Authorization ⬜ NEXT
-Phase 8  — Prompt Management             ⬜
-Phase 9  — AI Integration                ⬜
+Phase 7  — Authentication & Authorization ⏸️ SKIPPED
+Phase 8  — Prompt Management             ⏸️ SKIPPED
+Phase 9  — AI Integration                🟡 CURRENT
 Phase 10 — RAG / AI Knowledge            ⬜
 Phase 11 — Production & Deployment       ⬜
 ```

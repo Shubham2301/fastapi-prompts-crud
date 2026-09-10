@@ -5,6 +5,9 @@ from sqlalchemy.orm import Session
 from app.repositories import prompt_repository
 from app.exceptions.prompt import PromptNotFoundException, PromptAlreadyExistsException
 from typing import Optional
+from app.llm.ollama_client import chat
+from app.core.config import settings
+
 
 def create_prompt(prompt: PromptCreate, db: Session) -> Prompt:
 
@@ -78,3 +81,16 @@ def delete_prompt(prompt_id: int, db: Session):
         raise PromptNotFoundException(prompt_id)
 
     return prompt_repository.delete_prompt(prompt, db)
+
+
+def execute_prompt(prompt_id: int, db: Session) -> dict:
+    prompt = get_prompt(prompt_id, db)
+
+    result = chat(prompt.content)
+
+    return {
+        "prompt_id": prompt.id,
+        "model": settings.ollama_model,
+        "output": result["output"],
+        "usage": result["usage"]
+    }

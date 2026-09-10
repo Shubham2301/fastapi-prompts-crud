@@ -1,5 +1,5 @@
 from fastapi import APIRouter, status, Depends, Query
-from app.schemas.prompt import PromptCreate, PromptResponse, PromptUpdate, PromptListResponse
+from app.schemas.prompt import PromptCreate, PromptResponse, PromptUpdate, PromptListResponse, PromptExecuteResponse
 from typing import Optional, Literal
 
 from app.db.database import  get_db
@@ -11,7 +11,7 @@ from app.services.prompt_service import get_prompt as get_prompt_service
 from app.services.prompt_service import update_partial_prompt as update_partial_prompt_service
 from app.services.prompt_service import update_full_prompt as update_full_prompt_service
 from app.services.prompt_service import delete_prompt as delete_prompt_service
-
+from app.services.prompt_service import execute_prompt as execute_prompt_service
 
 
 
@@ -51,8 +51,6 @@ def get_prompts(
 def get_prompt(prompt_id: int, db: Session = Depends(get_db)):
     return get_prompt_service(prompt_id, db)
 
-
-
 @router.patch("/{prompt_id}", response_model=PromptResponse, status_code=status.HTTP_200_OK)
 def update_partial_prompt(prompt_id: int, prompt_data: PromptUpdate, db: Session = Depends(get_db)):
     return update_partial_prompt_service(prompt_id, prompt_data, db)
@@ -61,8 +59,10 @@ def update_partial_prompt(prompt_id: int, prompt_data: PromptUpdate, db: Session
 def update_full_prompt(prompt_id: int, prompt_data: PromptCreate, db: Session = Depends(get_db)):
     return update_full_prompt_service(prompt_id, prompt_data, db)
         
-
-
 @router.delete("/{prompt_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_prompt(prompt_id: int, db: Session = Depends(get_db)):
     return delete_prompt_service(prompt_id, db)
+
+@router.post("/{prompt_id}/execute", response_model=PromptExecuteResponse, status_code=status.HTTP_200_OK)
+def execute_prompt(prompt_id: int, db: Session = Depends(get_db)):
+    return execute_prompt_service(prompt_id, db)

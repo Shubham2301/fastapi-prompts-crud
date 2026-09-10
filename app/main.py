@@ -11,6 +11,7 @@ from app.core.config import settings
 from app.core.logging import setup_logging
 from app.exceptions.error import error_body
 import logging
+from app.exceptions.llm import LlmUnavailableException
 
 
 setup_logging()
@@ -60,6 +61,14 @@ def request_validation_error_handler(request: Request, exc: RequestValidationErr
     )
 
 
+@app.exception_handler(LlmUnavailableException)
+def llm_unavailable_exception_handler(request:Request, exc: LlmUnavailableException):
+    logger.warning("Language model is unavailable")
+
+    return JSONResponse(
+        status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+        content=error_body("SERVICE_UNAVAILABLE",str(exc)),
+    )
 
 
 @app.get("/")
